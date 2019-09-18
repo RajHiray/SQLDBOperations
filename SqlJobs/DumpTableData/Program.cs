@@ -12,6 +12,8 @@ namespace DumpTableData
     {
         static void Main(string[] args)
         {
+            SqlConnection sourceCon = null;
+            SqlConnection destinationCon = null;
             #region Read Configurations Data.
             string sourceCS = Convert.ToString(ConfigurationManager.ConnectionStrings["SourceCS"]);
             string destinationCS = Convert.ToString(ConfigurationManager.ConnectionStrings["DestinationCS"]);
@@ -25,11 +27,11 @@ namespace DumpTableData
             {
                 try
                 {
-                    SqlConnection sourceCon = new SqlConnection(sourceCS);
+                    sourceCon = new SqlConnection(sourceCS);
                     SqlCommand cmd = new SqlCommand("Select * from Departments", sourceCon);
                     sourceCon.Open();
                     SqlDataReader rdr = cmd.ExecuteReader();
-                    SqlConnection destinationCon = new SqlConnection(destinationCS);
+                    destinationCon = new SqlConnection(destinationCS);
                     using (SqlBulkCopy bc = new SqlBulkCopy(destinationCon))
                     {
                         bc.DestinationTableName = "Departments";
@@ -39,9 +41,14 @@ namespace DumpTableData
                 }
                 catch (Exception ex)
                 {
+                    ExceptionLogger.WriteException(ex);
                 }
                 finally
                 {
+                    if(sourceCon!=null)
+                        sourceCon.Dispose();
+                    if (destinationCon != null)
+                        destinationCon.Dispose();
                 }
 
             }
