@@ -10,6 +10,10 @@ namespace DumpTableData
 {
     class Program
     {
+        /// <summary>
+        /// Starting point for job.
+        /// </summary>
+        /// <param name="args">Arguments list object </param>
         static void Main(string[] args)
         {
             SqlConnection sourceCon = null;
